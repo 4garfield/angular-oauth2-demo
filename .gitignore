@@ -1,0 +1,15 @@
+# System Files
+.DS_Store
+Thumbs.db
+
+# dependencies
+/node_modules
+
+# compiled output
+/dist
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+
+.npmrc

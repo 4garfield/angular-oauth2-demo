@@ -1,0 +1,121 @@
+// These are important and needed before anything else
+import 'zone.js/dist/zone-node';
+import 'reflect-metadata';
+
+import { enableProdMode } from '@angular/core';
+
+import * as express from 'express';
+import * as qs from 'qs';
+import * as NodeCache from 'node-cache';
+import axios from 'axios';
+import { join } from 'path';
+
+// Faster server renders w/ Prod mode (dev mode never needed)
+enableProdMode();
+
+// Express server
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+const DIST_FOLDER = join(process.cwd(), 'dist');
+const ACCESS_TOKEN_RESPONSE = 'accessTokenResponse';
+
+// * NOTE :: leave this as require() since this file is built Dynamically from webpack
+const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('../dist/server/main.bundle');
+
+// Express Engine
+import { ngExpressEngine } from '@nguniversal/express-engine';
+// Import module map for lazy loading
+import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
+
+app.engine('html', ngExpressEngine({
+  bootstrap: AppServerModuleNgFactory,
+  providers: [
+    provideModuleMap(LAZY_MODULE_MAP)
+  ]
+}));
+
+app.set('view engine', 'html');
+app.set('views', join(DIST_FOLDER, 'browser'));
+
+function cacheControl(req, res, next) {
+  res.header('Cache-Control', 'max-age=60');
+  next();
+}
+
+// Server static files
+app.get('*.*', cacheControl, express.static(join(DIST_FOLDER, 'browser'), { index: false }));
+
+function getAccessTokenRequest() {
+  return axios({
+    method: 'POST',
+    url: process.env.TOKEN_ISSUER,
+    data: qs.stringify({
+      grant_type: process.env.GRANT_TYPE,
+      scope: process.env.SCOPE
+    }),
+    auth: {
+      username: process.env.CLIENT_ID,
+      password: process.env.CLIENT_SECRET,
+    },
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  });
+}
+
+const appCache = new NodeCache();
+
+const checkAccessToken = (req, res, next) => {
+  const accessTokenResponse = appCache.get(ACCESS_TOKEN_RESPONSE);
+  if (!accessTokenResponse) {
+    getAccessTokenRequest().then((response) => {
+      if (response.status === 200) {
+        const data = response.data;
+        appCache.set(ACCESS_TOKEN_RESPONSE, data, data.expires_in);
+        next();
+      }
+    }).catch(function (error) {
+      console.error(error);
+    });
+  } else {
+    next();
+  }
+};
+
+app.get('/getToken', checkAccessToken, (req, res) => {
+  res.json(appCache.get(ACCESS_TOKEN_RESPONSE));
+});
+
+app.get('*', cacheControl, checkAccessToken, (req, res) => {
+  console.time(`GET: ${req.originalUrl}`);
+
+  res.render('index', {
+    req: req,
+    res: res,
+    time: true,    // use this to determine what part of your app is slow, only in development
+    providers: [{
+      provide: 'accessTokenInSSr', useValue: appCache.get(ACCESS_TOKEN_RESPONSE)['access_token']
+    }]
+  });
+
+  console.timeEnd(`GET: ${req.originalUrl}`);
+});
+
+// catch 404
+app.use(function (req, res, next) {
+  res.status(404);
+  res.json({ msg: 'Request Resource Not Found' });
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.json({ msg: err.message });
+});
+
+// Start up the Node server
+app.listen(PORT, () => {
+  console.log(`Node server listening on http://localhost:${PORT}`);
+});

@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "angular-oauth2-demo"
+  },
+  "apps": [{
+    "name": "browser",
+    "platform": "browser",
+    "root": "src",
+    "outDir": "dist/browser",
+    "assets": [
+      "favicon.ico",
+      "assets"
+    ],
+    "index": "index.html",
+    "main": "main.browser.ts",
+    "polyfills": "polyfills.ts",
+    "tsconfig": "tsconfig.app.json",
+    "prefix": "app",
+    "styles": [],
+    "scripts": [],
+    "environmentSource": "environments/environment.ts",
+    "environments": {
+      "dev": "environments/environment.ts",
+      "prod": "environments/environment.prod.ts"
+    }
+  }, {
+    "name": "server",
+    "platform": "server",
+    "root": "src",
+    "outDir": "dist/server",
+    "main": "main.server.ts",
+    "tsconfig": "tsconfig.server.json",
+    "environmentSource": "environments/environment.ts",
+    "environments": {
+      "dev": "environments/environment.ts",
+      "prod": "environments/environment.prod.ts"
+    }
+  }],
+  "lint": [{
+    "project": "src/tsconfig.app.json",
+    "exclude": "**/node_modules/**"
+  }],
+  "defaults": {
+    "styleExt": "scss",
+    "component": {},
+    "build": {
+      "progress": true,
+      "sourcemaps": false,
+      "namedChunks": true
+    }
+  }
+}

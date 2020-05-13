@@ -1,0 +1,11 @@
+{
+  "editor.fontSize": 14,
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": false,
+  "editor.tabSize": 2,
+  "eslint.run": "onSave",
+  "files.trimTrailingWhitespace": true,
+  "html.format.enable": true,
+  "workbench.colorTheme": "One Monokai",
+  "workbench.iconTheme": "material-icon-theme"
+}
