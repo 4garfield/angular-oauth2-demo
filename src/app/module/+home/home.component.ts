@@ -18,10 +18,10 @@ export class HomeComponent {
 
   ngOnInit() {
     if (this.state.hasKey(RESULT_KEY)) {
-      console.log('HomeComponent, get json');
+      console.log('HomeComponent, get subs from ssr json');
       this.subs = this.state.get(RESULT_KEY, null as any);
     } else {
-      console.log('HomeComponent, get api');
+      console.log('HomeComponent, get subs from api');
       this.apiService.getProtectedApi().subscribe(data => {
         this.subs = data;
         this.state.set(RESULT_KEY, this.subs);

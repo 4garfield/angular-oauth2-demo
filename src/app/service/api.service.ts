@@ -10,7 +10,6 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   getProtectedApi(): Observable<any> {
-    console.log('ApiService, getProtectedApi');
     return this.http.get('https://demo.identityserver.io/api/test', {
       headers: {
         client_id: 'm2m'

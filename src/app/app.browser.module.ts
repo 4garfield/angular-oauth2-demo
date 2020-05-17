@@ -5,7 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppModule } from './app.module';
-import { TokenInterceptor } from './interceptor/token.interceptor';
 import { ApiCsrInterceptor } from './interceptor/api.csr.interceptor';
 
 @NgModule({
@@ -16,10 +15,6 @@ import { ApiCsrInterceptor } from './interceptor/api.csr.interceptor';
     AppModule
   ],
   providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: TokenInterceptor,
-    multi: true
-  }, {
     provide: HTTP_INTERCEPTORS,
     useClass: ApiCsrInterceptor,
     multi: true

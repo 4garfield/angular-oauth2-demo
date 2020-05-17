@@ -13,14 +13,13 @@ export class ApiCsrInterceptor implements HttpInterceptor {
     // https://stackoverflow.com/questions/45654351/injector-error-provider-parse-errors-cannot-instantiate-cyclic-dependency
     const authService = this.injector.get(AuthService);
 
-    console.log('ApiInterceptor, intercept:' + request.url);
-
-
-    request = request.clone({
-      setHeaders: {
-        Authorization: `Bearer ${authService.getTokenFromStorage()}`
-      }
-    });
+    if (request.headers.has('client_id')) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${authService.getTokenFromStorage()}`
+        }
+      });
+    }
     return next.handle(request);
   }
 }

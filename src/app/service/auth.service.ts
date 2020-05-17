@@ -1,21 +1,15 @@
-import { APP_ID, Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { SESSION_STORAGE, StorageService } from 'ngx-webstorage-service';
-
 import * as jwt from 'jsonwebtoken';
 import { Observable } from 'rxjs/Observable';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of'
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const TOKEN_EXPIRES_KEY = 'token_expires';
-
-enum TOKEN_STATUS {
-  VALID,
-  EXPIRES
-}
 
 @Injectable()
 export class AuthService {
@@ -38,27 +32,25 @@ export class AuthService {
       this.getTokenExpiresFromStorage() &&
       currentTimeInSecond < this.getTokenExpiresFromStorage()
     ) {
-      return of(this.getTokenFromStorage()).toPromise();
+      return of(this.getTokenFromStorage());
     } else {
       return this.getTokenFromSSR();
     }
   }
 
-  //Observable<string>
-  private getTokenFromSSR() {
+  private getTokenFromSSR(): Observable<string> {
     return this.http.get('http://localhost:3000/getToken').pipe(
       map(data => {
         const accessToken: string = data['access_token'];
-        console.log('accessToken:' + accessToken);
         if (isPlatformBrowser(this.platformId)) {
           this.storage.set(ACCESS_TOKEN_KEY, accessToken);
           const decoded = jwt.decode(accessToken);
           this.storage.set(TOKEN_EXPIRES_KEY, decoded['exp']);
-          console.log(JSON.stringify(decoded));
         }
+
         return accessToken;
       })
-    ).toPromise();
+    );
   }
 
 }
