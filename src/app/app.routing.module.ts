@@ -9,6 +9,9 @@ const routes: Routes = [
   }, {
     path: 'lazy',
     loadChildren: './module/+lazy/lazy.module#LazyModule'
+  }, {
+    path: 'error',
+    loadChildren: './module/+error/error.module#ErrorModule'
   }
 ];
 

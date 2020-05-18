@@ -2,7 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
-import { SESSION_STORAGE, StorageService } from 'ngx-webstorage-service';
+import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import * as jwt from 'jsonwebtoken';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
@@ -16,7 +16,7 @@ export class AuthService {
 
   constructor(private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(SESSION_STORAGE) private storage: StorageService) { }
+    @Inject(LOCAL_STORAGE) private storage: StorageService) { }
 
   public getTokenFromStorage(): string {
     return this.storage.get(ACCESS_TOKEN_KEY);

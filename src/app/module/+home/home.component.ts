@@ -8,7 +8,8 @@ const RESULT_KEY = makeStateKey<string>('api-json');
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // first time routing from lazy would cause blink issue
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
 

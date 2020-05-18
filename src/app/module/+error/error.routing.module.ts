@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { LazyComponent } from './lazy.component';
+import { ErrorComponent } from './error.component';
 
 @NgModule({
   imports: [
     RouterModule.forChild([
-      { path: '', component: LazyComponent, pathMatch: 'full' }
+      { path: '', component: ErrorComponent, pathMatch: 'full' }
     ])
   ]
 })
-export class LazyRoutingModule { }
+export class ErrorRoutingModule { }

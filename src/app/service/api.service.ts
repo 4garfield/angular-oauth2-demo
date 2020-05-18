@@ -14,8 +14,6 @@ export class ApiService {
       headers: {
         client_id: 'm2m'
       }
-    }).pipe(
-      catchError((e: HttpErrorResponse) => of(`API has Error: ${e.status} ${e.statusText}`)),
-    );
+    });
   }
 }
