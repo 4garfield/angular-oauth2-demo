@@ -8,7 +8,7 @@ const RESULT_KEY = makeStateKey<string>('api-json');
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  // first time routing from lazy would cause blink issue
+  // first time routing from /lazy would cause blink issue
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
@@ -23,10 +23,14 @@ export class HomeComponent {
       this.subs = this.state.get(RESULT_KEY, null as any);
     } else {
       console.log('HomeComponent, get subs from api');
-      this.apiService.getProtectedApi().subscribe(data => {
-        this.subs = data;
-        this.state.set(RESULT_KEY, this.subs);
-      });
+      this.apiService.getProtectedApi().subscribe(
+        data => {
+          this.subs = data;
+          this.state.set(RESULT_KEY, this.subs);
+        },
+        error => {
+          this.subs = `we're facing ${error.status} error while get data...`;
+        });
     }
   }
 

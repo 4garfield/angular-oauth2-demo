@@ -3,7 +3,6 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { retry, catchError } from 'rxjs/operators';
 
 @Injectable()
@@ -25,7 +24,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             errorMessage = error.message;
           }
           this.router.navigate(['/error']);
-          return ErrorObservable.create(errorMessage);
+          return Observable.throw(errorMessage);
         })
       )
   }

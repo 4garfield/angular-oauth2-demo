@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of'
+import { of } from 'rxjs/observable/of';
 
 import { AuthService } from '../service/auth.service';
 
@@ -10,7 +11,6 @@ import { AuthService } from '../service/auth.service';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private router: Router,
     private authService: AuthService
   ) { }
 
@@ -18,11 +18,9 @@ export class AuthGuard implements CanActivate {
 
     return this.authService.getOrUpdateToken()
       .pipe(
-        map(data => {
-          if (data) {
-            return true;
-          }
-        })
+        // get token fail or not won't break the route
+        map(data => { return true }),
+        catchError((e: HttpErrorResponse) => of(true))
       );
   }
 
