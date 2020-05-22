@@ -2,6 +2,8 @@
 
 Minimal Angular OAuth2 demo App with Client Credentials Grant.
 
+**Note:** The Client Credentials grant is used when applications request an access token to access their own resources, not on behalf of a user. It's generally for backend server to server and not for SPA.
+
 ## How to run
 
 1. clone project with git.
