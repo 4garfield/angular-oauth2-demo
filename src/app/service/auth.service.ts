@@ -34,7 +34,7 @@ export class AuthService {
     const currentTimeInSecond = Math.floor(Date.now() / 1000);
     const accessToken = this.getTokenFromStorage();
     const tokenExpires = this.getTokenExpiresFromStorage();
-    if (!isEmpty(accessToken) && !isEmpty(tokenExpires) && (currentTimeInSecond < tokenExpires)) {
+    if (!isEmpty(accessToken) && tokenExpires && (currentTimeInSecond < tokenExpires)) {
       return of(accessToken);
     } else if (!this.tokenObservable$) {
       this.tokenObservable$ = this.getTokenFromSSR();
@@ -56,8 +56,8 @@ export class AuthService {
       // All subscribers to ReplaySubject before completion of Source will get emitted values
       // (in our case just 1 value as Http emits only once). For all new subscribers ReplaySubject
       // will replay N buffered values.
-      publishReplay(1),
-      refCount()
+      // publishReplay(1),
+      // refCount()
     );
   }
 

@@ -56,7 +56,7 @@ const checkAccessToken = (req, res, next) => {
   const accessToken = appCache.get(ACCESS_TOKEN_RESPONSE);
   const tokenExpires = appCache.get(TOKEN_EXPIRES_RESPONSE);
   const currentTimeInSecond = Math.floor(Date.now() / 1000);
-  if (!isEmpty(accessToken) && !isEmpty(tokenExpires) && (currentTimeInSecond < tokenExpires)) {
+  if (!isEmpty(accessToken) && tokenExpires && (currentTimeInSecond < tokenExpires)) {
     next();
   } else {
     axios({
